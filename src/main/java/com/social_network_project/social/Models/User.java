@@ -4,13 +4,17 @@ package com.social_network_project.social.Models;
 public class User {
 
     private Integer id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
+    private String firstName = null;
+    private String lastName = null;
+    private String email = null;
+    private String password = null;
 
     public User() {
-
+        this.id = null;
+        this.firstName = null;
+        this.lastName = null;
+        this.email = null;
+        this.password = null;
     }
     public User(Integer Id, String firstName, String lastName, String email, String password) {
         this.id = Id;
