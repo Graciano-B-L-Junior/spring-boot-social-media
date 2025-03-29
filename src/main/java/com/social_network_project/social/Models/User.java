@@ -1,9 +1,16 @@
 package com.social_network_project.social.Models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "users")
 public class User {
 
+    @Id
     private Integer id;
+
     private String firstName = null;
     private String lastName = null;
     private String email = null;
@@ -40,5 +47,21 @@ public class User {
     }
     public String getPassword() {
         return password;
-    }   
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

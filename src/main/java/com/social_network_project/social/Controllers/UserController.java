@@ -1,7 +1,7 @@
 package com.social_network_project.social.Controllers;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,41 +14,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.social_network_project.social.Models.User;
+import com.social_network_project.social.Repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
+
 
 @RestController
 public class UserController {
 
+    @Autowired
+    private
+    UserRepository userRepository;
+
     @GetMapping("/users")
     public List<User> getUsers() {
-        List<User> users = new ArrayList<>();
-        
-        User user = new User(1,"code","test","email@email.com", "password");
-        User user2 = new User(2,"crok","test2","email2@email.com", "password2");
-        users.add(user);
-        users.add(user2);
-
-        
-
+        List<User> users = userRepository.findAll();
         return users;
     }
 
     @GetMapping("/users/{userID}")
     public ResponseEntity<?> getUserByID(@PathVariable("userID") int id)
     {
-        List<User> users = new ArrayList<>();
-        
-        User user = new User(1,"code","test","email@email.com", "password");
-        User user2 = new User(2,"crok","test2","email2@email.com", "password2");
-        users.add(user);
-        users.add(user2);
-
-        for (User user1 : users) {
-            if(user1.getId() == id)
-            {
-                return ResponseEntity.ok(user1);
-            }
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
         }
-
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
 
     }
@@ -57,64 +47,42 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestBody User user)
     {
         User newUser = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
-        
-        System.out.println("User created: " + newUser.getFirstName() + " " + newUser.getLastName());
+        User savedUser = userRepository.save(newUser);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        System.out.println("User created: " + savedUser.getFirstName() + " " + savedUser.getLastName());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
-    @PutMapping("/users")
-    public ResponseEntity<?> updateUser(@RequestBody User user)
+    @PutMapping("/users/{userID}")
+    public ResponseEntity<?> updateUser(@RequestBody User user,@PathVariable("userID") int id)
     {
-        List<User> users = new ArrayList<>();
-        User aux = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
-
-        User user1 = new User(1,"code","test","email@email.com", "password");
-        User user2 = new User(2,"crok","test2","email2@email.com", "password2");
-        users.add(user1);
-        users.add(user2);
-
-        for (User aux_user : users) {
-            if(aux_user.getId() == aux.getId())
-            {
-                if(aux.getFirstName() != null)
-                {
-                    aux_user = new User(aux.getId(), aux.getFirstName(), aux_user.getLastName(), aux_user.getEmail(), aux_user.getPassword());
-                }
-                if(aux.getLastName() != null)
-                {
-                    aux_user = new User(aux.getId(), aux_user.getFirstName(), aux.getLastName(), aux_user.getEmail(), aux_user.getPassword());
-                }
-                if(aux.getEmail() != null)
-                {
-                    aux_user = new User(aux.getId(), aux_user.getFirstName(), aux_user.getLastName(), aux.getEmail(), aux_user.getPassword());
-                }
-                if(aux.getPassword() != null)
-                {
-                    aux_user = new User(aux.getId(), aux_user.getFirstName(), aux_user.getLastName(), aux_user.getEmail(), aux.getPassword());
-                }
-                return ResponseEntity.ok(aux_user);
-            }
+        Optional<User> existingUser = userRepository.findById(id);
+        if (existingUser.isPresent()) {
+            User updatedUser = existingUser.get();
+            if(user.getFirstName() != null)
+                updatedUser.setFirstName(user.getFirstName());
+            if(user.getLastName() != null)
+                updatedUser.setLastName(user.getLastName());
+            if(user.getEmail() != null)
+                updatedUser.setEmail(user.getEmail());
+            if(user.getPassword() != null)
+                updatedUser.setPassword(user.getPassword());
+            if(user.getId() != null)
+                updatedUser.setId(user.getId());
+            userRepository.save(updatedUser);
+            return ResponseEntity.ok(updatedUser);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
     }
 
     @DeleteMapping("/users/{userID}")
     public ResponseEntity<?> deleteUser(@PathVariable("userID") int id) {
-        List<User> users = new ArrayList<>();
-        
-        User user1 = new User(1, "code", "test", "email@email.com", "password");
-        User user2 = new User(2, "crok", "test2", "email2@email.com", "password2");
-        users.add(user1);
-        users.add(user2);
-
-        for (User user : users) {
-            if (user.getId() == id) {
-                users.remove(user);
-                return ResponseEntity.ok("User with ID " + id + " has been deleted.");
-            }
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            userRepository.delete(user.get());
+            return ResponseEntity.ok("User deleted successfully");
         }
-
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
     }
 }
