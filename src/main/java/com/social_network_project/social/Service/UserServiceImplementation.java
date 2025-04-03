@@ -56,17 +56,17 @@ public class UserServiceImplementation implements UserService {
             User user = user1.get();
             User followUser = user2.get();
 
-            List<Integer> following = user.getFollowing();
-            List<Integer> followers = followUser.getFollowers();
+            List<User> following = user.getFollowing();
+            List<User> followers = followUser.getFollowers();
 
-            if (!following.contains(followUserId)) {
-                following.add(followUserId);
+            if (!following.contains(followUser)) {
+                following.add(followUser);
                 user.setFollowing(following);
                 userRepository.save(user);
             }
 
-            if (!followers.contains(userId)) {
-                followers.add(userId);
+            if (!followers.contains(user)) {
+                followers.add(user);
                 followUser.setFollowing(followers);
                 userRepository.save(followUser);
             }

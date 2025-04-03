@@ -3,14 +3,21 @@ package com.social_network_project.social.Models;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.ManyToAny;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
+
 public class User {
 
     @Id
@@ -24,9 +31,13 @@ public class User {
 
     private String gender = null;
 
-    private List<Integer> followers = new ArrayList<>();
-    private List<Integer> following = new ArrayList<>();
+    @ManyToAny
+    private List<User> followers = new ArrayList<>();
 
+    @ManyToAny
+    private List<User> following = new ArrayList<>();
+
+    @ManyToMany
     private List<Post> savedPosts = new ArrayList<>();
 
 
@@ -39,7 +50,7 @@ public class User {
     }
     public User(Integer Id, String firstName, String lastName, 
                 String email, String password, String gender, 
-                List<Integer> followers, List<Integer> following) {
+                List<User> followers, List<User> following) {
         this.id = Id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -87,25 +98,22 @@ public class User {
 
         return this.gender;
     }
-    public List<Integer> getFollowing() {
-        
+    public List<User> getFollowing() {
         return this.following;
     }
 
-    public List<Integer> getFollowers() {
-        
+    public List<User> getFollowers() {
         return this.followers;
     }
 
-    public void setFollowing(List<Integer> following) {
+    public void setFollowing(List<User> following) {
         this.following = following;
     }
 
-    public void setFollowers(List<Integer> followers) {
+    public void setFollowers(List<User> followers) {
         this.followers = followers;
     }
     public void setGender(String gender) {
-        // TODO Auto-generated method stub
         this.gender = gender;
     }
 
