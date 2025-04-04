@@ -15,7 +15,7 @@ import jakarta.persistence.OneToMany;
 public class Post {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String caption;
@@ -27,10 +27,10 @@ public class Post {
     @ManyToOne
     private User user;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany
-    private List<User> likes;
+    private List<User> likes = new ArrayList<>();
 
     public Post(Integer id, String caption, String image, String video, User user) {
         this.id = id;
@@ -41,13 +41,7 @@ public class Post {
         this.createdAt = LocalDateTime.now();
     }
     public Post() {
-        this.id = null;
-        this.caption = null;
-        this.image = null;
-        this.video = null;
-        this.user = null;
-        this.createdAt = LocalDateTime.now();
-        this.likes = new ArrayList<>();
+        
     }
 
     public Integer getId() {
@@ -92,6 +86,16 @@ public class Post {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public List<User> getLikes()
+    {
+        return likes;
+    }
+
+    public void setLikes(List<User> likes)
+    {
+        this.likes = likes;
     }
 
     public List<User> getAllLikes() {

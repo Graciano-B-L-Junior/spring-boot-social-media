@@ -25,10 +25,13 @@ public class PostServiceImplementation implements PostService {
     public Post createNewPost(Post post, Integer userId) throws Exception {
         
         Post newPost = new Post();
+        newPost.setId(post.getId());
         newPost.setCaption(post.getCaption());
         newPost.setImage(post.getImage());
         newPost.setVideo(post.getVideo());
+        newPost.setLikes(post.getLikes());
         newPost.setUser(userService.findUserById(userId));
+        postRepository.save(newPost);
         return newPost;
 
     }
